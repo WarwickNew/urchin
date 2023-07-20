@@ -1,6 +1,7 @@
 // Sorry in advance for all the comments. This project is also a way for me to
 // learn C.
 
+#include "error.h"
 #include <netinet/in.h> //sockaddr_in
 #include <stdio.h>
 #include <stdlib.h> // Keeping for conversion functions
@@ -8,16 +9,6 @@
 #include <strings.h>
 #include <sys/socket.h> // sockaddr
 #include <sys/types.h>
-
-void error_crash(const char *msg) {
-  fprintf(stderr, "error crash: %s\n", msg);
-  exit(EXIT_FAILURE);
-}
-
-void error_warn(const char *msg) { fprintf(stderr, "warning: %s\n", msg); }
-
-// TODO: Save the logs somewhere
-void error_log(const char *msg) { fprintf(stderr, "log: %s\n", msg); }
 
 int main(int argc, char *argv[]) {
   // Set up containers for file descriptor id's
