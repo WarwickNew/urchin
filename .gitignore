@@ -1,3 +1,4 @@
+#Build files
 .cache
 CMakeCache.txt
 CMakeFiles
@@ -8,3 +9,6 @@ Makefile
 urchin-*
 lib*.a
 lib*.so
+
+#Generated code
+src/protobuf_gen

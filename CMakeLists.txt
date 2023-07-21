@@ -9,6 +9,11 @@ set(CMAKE_C_STANDARD 90)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_CLANG_TIDY)
 
+# Get protobuf to serialize data between the server and client
+# cmake config not packaged with the lib. resort to pkg config
+include(FindPkgConfig)
+pkg_check_modules(protobuf-c REQUIRED libprotobuf-c>=1.4.1)
+
 # Compile Shared Library
 file(GLOB_RECURSE LIBRARY_SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/shared_lib/*.c)
@@ -16,7 +21,35 @@ file(GLOB_RECURSE LIBRARY_SOURCE_FILES
 file(GLOB_RECURSE LIBRARY_HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/shared_lib/*.h)
 
-add_library(${PROJECT_NAME} SHARED ${LIBRARY_HEADER_FILES} ${LIBRARY_SOURCE_FILES})
+# Generate Protobuf code
+find_program(protoc-c_EXECUTABLE NAMES protoc-c REQUIRED)
+find_package_handle_standard_args(protoc-c REQUIRED_VARS protoc-c_EXECUTABLE)
+file(GLOB_RECURSE PROTOBUF_PROTO_FILES
+    ${CMAKE_SOURCE_DIR}/protobuf/*.proto)
+add_custom_target(GenerateProtobuf)
+add_custom_command(
+    OUTPUT GenerateProtobuf
+    DEPENDS ${protoc-c_EXECUTABLE}
+    COMMAND ${protoc-c_EXECUTABLE} --c_out=${CMAKE_SOURCE_DIR}/src/protobuf_gen/ --proto_path=${CMAKE_SOURCE_DIR}/protobuf/ ${PROTOBUF_PROTO_FILES}
+)
+
+# Include protobuf generated  message formats
+file(GLOB_RECURSE PROTOBUF_SOURCE_FILES
+    ${CMAKE_SOURCE_DIR}/src/protobuf_gen/*.c)
+
+file(GLOB_RECURSE PROTOBUF_HEADER_FILES
+    ${CMAKE_SOURCE_DIR}/src/protobuf_gen/*.h)
+
+add_library(${PROJECT_NAME} SHARED
+    GenerateProtobuf
+    ${LIBRARY_HEADER_FILES}
+    ${LIBRARY_SOURCE_FILES}
+    ${PROTOBUF_HEADER_FILES}
+    ${PROTOBUF_SOURCE_FILES}
+)
+
+target_link_libraries(${PROJECT_NAME} protobuf-c)
+
 
 # Compile Server
 file(GLOB_RECURSE SERVER_SOURCE_FILES
