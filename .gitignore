@@ -6,9 +6,11 @@ cmake_install.cmake
 compile_commands.json
 .dir-locals.el
 Makefile
-urchin-*
+urchin-server
+urchin-client
 lib*.a
 lib*.so
 
 #Generated code
 src/protobuf_gen
+urchin-util/src/protobuf_gen
