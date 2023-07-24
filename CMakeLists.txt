@@ -39,16 +39,18 @@ file(GLOB_RECURSE PROTOBUF_SOURCE_FILES
 
 file(GLOB_RECURSE PROTOBUF_HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/protobuf_gen/*.h)
+set_source_files_properties(${PROTOBUF_HEADER_FILES} ${PROTOBUF_SOURCE_FILES} PROPERTIES GENERATED TRUE)
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
     GenerateProtobuf
     ${LIBRARY_HEADER_FILES}
-    ${LIBRARY_SOURCE_FILES}
     ${PROTOBUF_HEADER_FILES}
+    ${LIBRARY_SOURCE_FILES}
     ${PROTOBUF_SOURCE_FILES}
 )
+add_dependencies(${PROJECT_NAME} GenerateProtobuf)
 
-target_link_libraries(${PROJECT_NAME} protobuf-c)
+target_link_libraries(${PROJECT_NAME} PUBLIC protobuf-c)
 
 
 # Compile Server
@@ -59,7 +61,7 @@ file(GLOB_RECURSE SERVER_HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/server/*.h)
 
 add_executable(${PROJECT_NAME}-server ${SERVER_HEADER_FILES} ${SERVER_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}-server ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}-server PUBLIC ${PROJECT_NAME})
 
 # Compile Client
 file(GLOB_RECURSE CLIENT_SOURCE_FILES
@@ -69,4 +71,4 @@ file(GLOB_RECURSE CLIENT_HEADER_FILES
     ${CMAKE_SOURCE_DIR}/src/client/*.h)
 
 add_executable(${PROJECT_NAME}-client ${CLIENT_HEADER_FILES} ${CLIENT_SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME}-client ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}-client PUBLIC ${PROJECT_NAME})
