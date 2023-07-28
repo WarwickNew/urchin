@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+message Item {
+  required string id = 1;
+}
+
+message PlayerStatus {
+  required int32 id = 1;
+  optional int32 health = 2;
+  repeated Item inventory = 3;
+}
+
+// Sending plain text passwords is bad
+message PlayerLogin {
+  required string username = 1;
+  required string password = 2;
+}

@@ -2,6 +2,7 @@
 // learn C.
 
 #include <error.h>
+#include <message.h>
 #include <netinet/in.h> //sockaddr_in
 #include <stdio.h>
 #include <stdlib.h> // Keeping for conversion functions
@@ -11,6 +12,8 @@
 #include <sys/types.h>
 
 int main(int argc, char *argv[]) {
+  int a = 1;
+  msg_amsg_test(a);
 
   // Set up containers for file descriptor id's
   int sockfd, clientsockfd, portno, errflag;
@@ -33,10 +36,6 @@ int main(int argc, char *argv[]) {
   if (sockfd < 0) {
     error_crash("Can't open socket.");
   }
-
-  error_warn("Can't open socket.");
-  int a = 1;
-  msg_amsg_test(a);
 
   // Make sure there is no junk data in serve_addr
   bzero((char *)&serv_addr, sizeof serv_addr);
