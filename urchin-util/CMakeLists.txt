@@ -28,7 +28,10 @@ file(GLOB_RECURSE PROTOBUF_PROTO_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/protobuf/*.proto)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf_gen/)
 add_custom_target(GenerateProtobuf)
-add_custom_command(
+execute_process( # Execute process is used to generate this code before the initial file glob
+    COMMAND ${protoc-c_EXECUTABLE} --c_out=${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf_gen/ --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protobuf/ ${PROTOBUF_PROTO_FILES}
+)
+add_custom_command( # add_custom command is used to update the generated code after .proto files have been modified
     OUTPUT GenerateProtobuf
     DEPENDS ${protoc-c_EXECUTABLE}
     COMMAND ${protoc-c_EXECUTABLE} --c_out=${CMAKE_CURRENT_SOURCE_DIR}/src/protobuf_gen/ --proto_path=${CMAKE_CURRENT_SOURCE_DIR}/protobuf/ ${PROTOBUF_PROTO_FILES}
