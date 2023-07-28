@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void error_crash(const char *msg);
+void err__crash(const char *msg);
 
-void error_warn(const char *msg);
+void err__warn(const char *msg);
 
-void error_log(const char *msg);
+void err__log(const char *msg);

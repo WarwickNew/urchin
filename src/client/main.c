@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   char msgbuffer[255];
 
   if (argc < 2) {
-    error_crash("Not enough server info has been provided");
+    err__crash("Not enough server info has been provided");
   }
 
   if (argc > 2) {
@@ -42,11 +42,11 @@ int main(int argc, char *argv[]) {
   // Create socket
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0)
-    error_crash("Can't open socket.");
+    err__crash("Can't open socket.");
 
   server = gethostbyname(argv[1]);
   if (server == NULL)
-    error_crash("No such host exists :(");
+    err__crash("No such host exists :(");
 
   serv_addr.sin_family = AF_INET;
   bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr,
@@ -54,19 +54,19 @@ int main(int argc, char *argv[]) {
   serv_addr.sin_port = htons(portno);
   errflag = connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr));
   if (errflag < 0)
-    error_crash("Failed to connect to host");
+    err__crash("Failed to connect to host");
 
   while (1) {
     bzero(msgbuffer, sizeof msgbuffer);
     fgets(msgbuffer, sizeof msgbuffer, stdin);
     errflag = write(sockfd, msgbuffer, strlen(msgbuffer));
     if (errflag < 0)
-      error_crash("Failed to write message");
+      err__crash("Failed to write message");
 
     bzero(msgbuffer, sizeof msgbuffer);
     errflag = read(sockfd, msgbuffer, sizeof msgbuffer);
     if (errflag < 0)
-      error_crash("Failed to read message");
+      err__crash("Failed to read message");
 
     printf("Server: %s", msgbuffer);
 
