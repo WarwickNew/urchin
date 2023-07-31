@@ -1,5 +1,6 @@
 #include "message.h"
 #include "protobuf_gen/amessage.pb-c.h"
+#include "protobuf_gen/player.pb-c.h"
 
 #define MAX_MSG_SIZE 1024
 
@@ -29,7 +30,7 @@ void msg__amsg_test(int a) {
 
   msg2 = amessage__unpack(NULL, msg_len, buf2);
   if (msg2 == NULL) {
-    err__crash("error unpacking incoming message\n");
+    err__crash("error unpacking incoming message");
   }
 
   // display the message's fields.
@@ -40,6 +41,51 @@ void msg__amsg_test(int a) {
 
   // Free the unpacked message
   amessage__free_unpacked(msg2, NULL);
+}
+
+void msg__handle_login(int *con_sockfd) {
+  uint8_t msgbuf[MAX_MSG_SIZE];
+  bzero(msgbuf, sizeof msgbuf);
+
+  // TODO: Figure out how to terminate based on end of req
+  if (read(*con_sockfd, msgbuf, sizeof msgbuf) < 0) {
+    err__warn("Connection did not send login data");
+  }
+
+  PlayerLogin *pl = player_login__unpack(NULL, sizeof msgbuf, msgbuf);
+  if (pl == NULL) {
+    err__warn("Error unpacking login message");
+    return;
+  }
+
+  // TODO: Do something with login data
+  char msg[80];
+  snprintf(msg, sizeof msg, "Recieved Login: %s %s \n", pl->username,
+           pl->password);
+  err__log(msg);
+}
+
+void msg__login_req(int *con_sockfd, char *usernm, char *passwd) {
+  PlayerLogin pl = PLAYER_LOGIN__INIT;
+  void *msgbuf;
+  unsigned len;
+
+  pl.username = usernm;
+  pl.password = passwd;
+
+  len = player_login__get_packed_size(&pl);
+  msgbuf = malloc(len);
+  player_login__pack(&pl, msgbuf);
+
+  if (write(con_sockfd, msgbuf, len) < 0) {
+    err__crash("Couldn't write response message");
+    free(msgbuf);
+    return;
+  }
+  fprintf(stderr, "Writing %d serialized bytes\n",
+          len); // See the length of message
+  fwrite(msgbuf, len, 1, stderr);
+  free(msgbuf);
 }
 
 int msg__create_serv_connection(int portno) {

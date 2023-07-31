@@ -19,3 +19,7 @@ void msg__destroy_connection(int sockfd);
 
 // Creates a socket for the client and returns the file descriptor
 int msg__accept_cli_connection(int server_sockfd);
+
+// Handle logins
+void msg__handle_login(int *con_sockfd);
+void msg__login_req(int *con_sockfd, char *usernm, char *passwd);
