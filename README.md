@@ -4,7 +4,7 @@ eventually be a MUD that may or may not link into my other software projects.
 
 ## TODO
 ### Road to v0.1
-- [ ] Create initial communication process between clients and server.
+- [x] Create initial communication process between clients and server.
 - [ ] Handle multiple connections.
 - [ ] Use openssl so passwords arn't going over the internet via plaintext.
 - [ ] Create world data structure.
