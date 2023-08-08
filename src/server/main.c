@@ -12,12 +12,9 @@
 #include <sys/types.h>
 
 int main(int argc, char *argv[]) {
-  int a = 1;
-
   // Set up containers for file descriptor id's
   int serv_sockfd, cli_sockfd, portno, errflag;
   char msgbuffer[255];
-
   // Set port number.
   if (argc > 1) {
     portno = atoi(argv[1]);
@@ -33,8 +30,12 @@ int main(int argc, char *argv[]) {
   // Create socket
   serv_sockfd = msg__create_serv_connection(portno);
 
+
   // Accept connection
   cli_sockfd = msg__accept_cli_connection(serv_sockfd);
+
+  // Require login as first request
+  msg__handle_login(&serv_sockfd);
 
   while (1) {
     // Empty message buffer
