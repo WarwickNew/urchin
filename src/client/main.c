@@ -2,6 +2,8 @@
 // learn C.
 
 #include "error.h"
+#include "message.h"
+#include <unistd.h>
 #include <netdb.h>      // Contains host structure
 #include <netinet/in.h> //sockaddr_in
 #include <stdio.h>
@@ -56,7 +58,7 @@ int main(int argc, char *argv[]) {
   if (errflag < 0)
     err__crash("Failed to connect to host");
 
-  msg__login_req(sockfd, "username", "passwd");
+  msg__login_req(&sockfd, "username", "passwd");
 
   while (1) {
     bzero(msgbuffer, sizeof msgbuffer);
