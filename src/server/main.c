@@ -10,6 +10,8 @@
 #include <strings.h>
 #include <sys/socket.h> // sockaddr
 #include <sys/types.h>
+#include <unistd.h>
+#include "world.h"
 
 int main(int argc, char *argv[]) {
   // Set up containers for file descriptor id's
@@ -27,9 +29,11 @@ int main(int argc, char *argv[]) {
   socklen_t clilen = sizeof cli_addr; // We can do this here as cli_addr isn't
                                       // touched until it's used
 
+  // Create world
+  Room* world = wrld__create();
+
   // Create socket
   serv_sockfd = msg__create_serv_connection(portno);
-
 
   // Accept connection
   cli_sockfd = msg__accept_cli_connection(serv_sockfd);
@@ -63,6 +67,7 @@ int main(int argc, char *argv[]) {
 
   msg__destroy_connection(cli_sockfd);
   msg__destroy_connection(serv_sockfd);
+  wrld__destroy(world);
 
   return EXIT_SUCCESS;
 }

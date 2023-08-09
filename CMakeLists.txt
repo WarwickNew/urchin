@@ -5,7 +5,7 @@ project(urchin
     HOMEPAGE_URL "https://git.warwick-new.co.uk/"
     LANGUAGES C)
 
-set(CMAKE_C_STANDARD 90)
+set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_C_CLANG_TIDY)
 

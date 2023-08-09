@@ -1,4 +1,5 @@
 #Build files
+.cmake
 .cache
 CMakeCache.txt
 CMakeFiles
