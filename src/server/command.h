@@ -2,8 +2,7 @@
 
 #include "world.h"
 #include <error.h>
-
-typedef enum { NORTH, EAST, SOUTH, WEST } move_directions;
+#include <world_structures.h>
 
 // Returns pointer to new room based on current room and direction If room
 // doesn't exist returns NULL

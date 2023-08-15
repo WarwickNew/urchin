@@ -23,3 +23,8 @@ int msg__accept_cli_connection(int server_sockfd);
 // Handle logins
 void msg__handle_login(int *con_sockfd);
 void msg__login_req(int *con_sockfd, char *usernm, char *passwd);
+
+
+// send and recive commands
+void msg__handle_command(int *con_sockfd);
+void msg__command_req(int *con_sockfd, char *usernm, char *passwd);
