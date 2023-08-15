@@ -1,3 +1,5 @@
+#pragma once
+
 #define WORLD_SIZE 100
 
 #include <math.h>
