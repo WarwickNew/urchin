@@ -10,9 +10,11 @@ Room* wrld__create() {
     rooms[i].name = strbuf;
     rooms[i].description = strbuf;
     rooms[i].north = NULL;
-    rooms[i].east = NULL;
+    if (i>0) // Link to previous room if exists
+      rooms[i].east = &rooms[i-1];
     rooms[i].south = NULL;
-    rooms[i].west = NULL;
+    if (i<WORLD_SIZE-1) // Link to next room if exists
+      rooms[i].west = &rooms[i-1];
   }
 
   return rooms;
