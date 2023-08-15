@@ -1,6 +1,7 @@
 #define WORLD_SIZE 100
 
 #include <math.h>
+#include <error.h>
 #include <stdio.h>
 #include <stdlib.h>
 
