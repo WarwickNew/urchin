@@ -65,17 +65,12 @@ void msg__recv_login(int *con_sockfd) {
 
   if (read(*con_sockfd, msgbuf, sizeof msgbuf) < 0) {
     err__warn("Connection did not send login data");
-    perror("Error: ");
   }
 
   size_t msg_len = get_msg_size_in_buffer(MAX_MSG_SIZE, msgbuf);
   PlayerLogin *pl = player_login__unpack(NULL, msg_len, msgbuf);
   if (pl == NULL) {
     err__warn("Error unpacking login message");
-    printf("unpacked size %zu \n", msg_len);
-    // fwrite(msgbuf, sizeof msgbuf, 1, stderr);
-    fwrite(msgbuf, msg_len, 1, stderr);
-    perror("Error: ");
 
     player_login__free_unpacked(pl, NULL);
     return;
@@ -165,4 +160,4 @@ int msg__accept_cli_connection(int server_sockfd) {
 }
 
 void msg__recv_command(int *con_sockfd) {}
-void msg__req_command(int *con_sockfd, char *usernm, char *passwd);
+void msg__req_command(int *con_sockfd, char *usernm, char *passwd){}
