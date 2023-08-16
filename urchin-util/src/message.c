@@ -59,13 +59,18 @@ size_t get_msg_size_in_buffer(unsigned max_length, uint8_t *out) {
   return cur_len;
 }
 
+void read_from_sock(uint8_t *recvbuf, unsigned bufsize, int *sockfd) {
+  bzero(recvbuf,  bufsize);
+
+  if (read(*sockfd, recvbuf, bufsize) < 0) {
+    err__warn("Connection did not send data");
+  }
+}
+
 void msg__recv_login(int *con_sockfd) {
   uint8_t msgbuf[MAX_MSG_SIZE];
-  bzero(msgbuf, sizeof msgbuf);
 
-  if (read(*con_sockfd, msgbuf, sizeof msgbuf) < 0) {
-    err__warn("Connection did not send login data");
-  }
+  read_from_sock(msgbuf, sizeof msgbuf, con_sockfd);
 
   size_t msg_len = get_msg_size_in_buffer(MAX_MSG_SIZE, msgbuf);
   PlayerLogin *pl = player_login__unpack(NULL, msg_len, msgbuf);
