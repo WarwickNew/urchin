@@ -51,9 +51,9 @@ size_t get_msg_size_in_buffer(unsigned max_length, uint8_t *out) {
   size_t cur_len = 0;
   while ((out[cur_len]) != 0) {
     cur_len++;
-    if (cur_len == max_length) {
+    if (cur_len >= max_length) {
       err__warn("max message length exceeded\n");
-      return cur_len;
+      return max_length;
     }
   }
   return cur_len;
@@ -160,4 +160,4 @@ int msg__accept_cli_connection(int server_sockfd) {
 }
 
 void msg__recv_command(int *con_sockfd) {}
-void msg__req_command(int *con_sockfd, char *usernm, char *passwd){}
+void msg__req_command(int *con_sockfd, char *usernm, char *passwd) {}
