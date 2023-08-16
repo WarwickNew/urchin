@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   if (errflag < 0)
     err__crash("Failed to connect to host");
 
-  msg__login_req(&sockfd, "username", "passwd");
+  msg__req_login(&sockfd, "username", "passwd");
 
   while (1) {
     bzero(msgbuffer, sizeof msgbuffer);

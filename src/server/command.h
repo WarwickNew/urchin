@@ -6,4 +6,4 @@
 
 // Returns pointer to new room based on current room and direction If room
 // doesn't exist returns NULL
-Room *cmd__move(move_directions direction, Room *current_room);
+Room *cmd__move(move_direction direction, Room *current_room);

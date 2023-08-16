@@ -21,10 +21,10 @@ void msg__destroy_connection(int sockfd);
 int msg__accept_cli_connection(int server_sockfd);
 
 // Handle logins
-void msg__handle_login(int *con_sockfd);
-void msg__login_req(int *con_sockfd, char *usernm, char *passwd);
+void msg__recv_login(int *con_sockfd);
+void msg__req_login(int *con_sockfd, char *usernm, char *passwd);
 
 
 // send and recive commands
-void msg__handle_command(int *con_sockfd);
-void msg__command_req(int *con_sockfd, char *usernm, char *passwd);
+void msg__recv_command(int *con_sockfd);
+void msg__req_command(int *con_sockfd, char *usernm, char *passwd);

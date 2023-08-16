@@ -1,4 +1,5 @@
 #include "message.h"
+#include "world_structures.h"
 #include "protobuf_gen/amessage.pb-c.h"
 #include "protobuf_gen/player.pb-c.h"
 
@@ -43,7 +44,7 @@ void msg__amsg_test(int a) {
   amessage__free_unpacked(msg2, NULL);
 }
 
-void msg__handle_login(int *con_sockfd) {
+void msg__recv_login(int *con_sockfd) {
   uint8_t msgbuf[MAX_MSG_SIZE];
   bzero(msgbuf, sizeof msgbuf);
 
@@ -65,7 +66,7 @@ void msg__handle_login(int *con_sockfd) {
   err__log(msg);
 }
 
-void msg__login_req(int *con_sockfd, char *usernm, char *passwd) {
+void msg__req_login(int *con_sockfd, char *usernm, char *passwd) {
   PlayerLogin pl = PLAYER_LOGIN__INIT;
   void *msgbuf;
   unsigned len;

@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   cli_sockfd = msg__accept_cli_connection(serv_sockfd);
 
   // Require login as first request
-  msg__handle_login(&serv_sockfd);
+  msg__recv_login(&serv_sockfd);
 
   while (1) {
     // Empty message buffer

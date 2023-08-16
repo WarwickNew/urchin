@@ -1,0 +1,6 @@
+syntax = "proto2";
+
+message command {
+  optional int32 move_direction = 1; // For now this int directly maps onto the enum type
+  // TODO: Add other optional structures to be processed as command data
+}
