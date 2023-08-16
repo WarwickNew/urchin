@@ -1,7 +1,9 @@
 #include "message.h"
-#include "world_structures.h"
+#include "error.h"
 #include "protobuf_gen/amessage.pb-c.h"
 #include "protobuf_gen/player.pb-c.h"
+#include "world_structures.h"
+#include <stdio.h>
 
 #define MAX_MSG_SIZE 1024
 
@@ -44,18 +46,38 @@ void msg__amsg_test(int a) {
   amessage__free_unpacked(msg2, NULL);
 }
 
+// Gets size of protobuf message inside bigger buffer
+size_t get_msg_size_in_buffer(unsigned max_length, uint8_t *out) {
+  size_t cur_len = 0;
+  while ((out[cur_len]) != 0) {
+    cur_len++;
+    if (cur_len == max_length) {
+      err__warn("max message length exceeded\n");
+      return cur_len;
+    }
+  }
+  return cur_len;
+}
+
 void msg__recv_login(int *con_sockfd) {
   uint8_t msgbuf[MAX_MSG_SIZE];
   bzero(msgbuf, sizeof msgbuf);
 
-  // TODO: Figure out how to terminate based on end of req
   if (read(*con_sockfd, msgbuf, sizeof msgbuf) < 0) {
     err__warn("Connection did not send login data");
+    perror("Error: ");
   }
 
-  PlayerLogin *pl = player_login__unpack(NULL, sizeof msgbuf, msgbuf);
+  size_t msg_len = get_msg_size_in_buffer(MAX_MSG_SIZE, msgbuf);
+  PlayerLogin *pl = player_login__unpack(NULL, msg_len, msgbuf);
   if (pl == NULL) {
     err__warn("Error unpacking login message");
+    printf("unpacked size %zu \n", msg_len);
+    // fwrite(msgbuf, sizeof msgbuf, 1, stderr);
+    fwrite(msgbuf, msg_len, 1, stderr);
+    perror("Error: ");
+
+    player_login__free_unpacked(pl, NULL);
     return;
   }
 
@@ -64,6 +86,8 @@ void msg__recv_login(int *con_sockfd) {
   snprintf(msg, sizeof msg, "Recieved Login: %s %s \n", pl->username,
            pl->password);
   err__log(msg);
+
+  player_login__free_unpacked(pl, NULL);
 }
 
 void msg__req_login(int *con_sockfd, char *usernm, char *passwd) {
@@ -78,14 +102,15 @@ void msg__req_login(int *con_sockfd, char *usernm, char *passwd) {
   msgbuf = malloc(len);
   player_login__pack(&pl, msgbuf);
 
-  if (write(con_sockfd, msgbuf, len) < 0) {
+  if (write(*con_sockfd, msgbuf, len) < 0) {
     err__crash("Couldn't write response message");
     free(msgbuf);
     return;
   }
-  fprintf(stderr, "Writing %d serialized bytes\n",
-          len); // See the length of message
+  // See the length of message
+  fprintf(stderr, "Writing %d serialized bytes\n", len);
   fwrite(msgbuf, len, 1, stderr);
+
   free(msgbuf);
 }
 
@@ -138,3 +163,6 @@ int msg__accept_cli_connection(int server_sockfd) {
 
   return cli_sockfd;
 }
+
+void msg__recv_command(int *con_sockfd) {}
+void msg__req_command(int *con_sockfd, char *usernm, char *passwd);

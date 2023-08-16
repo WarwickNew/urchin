@@ -1,6 +1,7 @@
 #pragma once
 
 #include "error.h"
+#include "message_internal.h"
 #include <netinet/in.h> //sockaddr_in
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +24,6 @@ int msg__accept_cli_connection(int server_sockfd);
 // Handle logins
 void msg__recv_login(int *con_sockfd);
 void msg__req_login(int *con_sockfd, char *usernm, char *passwd);
-
 
 // send and recive commands
 void msg__recv_command(int *con_sockfd);
