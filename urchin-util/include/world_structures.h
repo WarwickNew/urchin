@@ -2,7 +2,7 @@
 // Make world structures accessible to both server and client
 
 // Define moveable directions
-// TODO eventually move over to a hash table so players can move through
+// TODO: eventually move over to a hash table so players can move through
 // exits defined in the room description like hatch, crack, door, etc.
 typedef enum { NORTH, EAST, SOUTH, WEST } move_direction;
 
