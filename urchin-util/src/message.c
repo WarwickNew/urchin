@@ -1,12 +1,25 @@
 #include "message.h"
 #include "error.h"
+#include "protobuf_gen/commands.pb-c.h"
 #include "world_structures.h"
 #include <stdio.h>
 
-#define MAX_MSG_SIZE 1024
+#define MAX_MSG_SIZE 4096
+
+void msg__send_msgbuf(int *con_sockfd, uint8_t *msgbuf, size_t msgbuf_size) {
+  if (msgbuf_size > MAX_MSG_SIZE) {
+    err__crash("Msg buffer too big to send");
+    free(msgbuf);
+  }
+
+  if (write(*con_sockfd, msgbuf, msgbuf_size) < 0) {
+    err__crash("Couldn't write message buffer to server");
+    free(msgbuf);
+  }
+}
 
 void msg__amsg_test(int a) {
-  AMessage msg = AMESSAGE__INIT; // The massage format
+  AMessage msg = AMESSAGE__INIT; // The message format
   void *buf;                     // Buffer to store serialized data
   unsigned len;                  // length of serialized data
 
@@ -161,7 +174,18 @@ Command *msg__recv_command(int *con_sockfd) {
 
   return cmd;
 }
-void msg__req_command(int *con_sockfd, char *usernm, char *passwd) {}
+
+void msg__req_command(int *con_sockfd, Command *command) {
+  void *msgbuf;
+  unsigned len;
+
+  // FIX: Figure out why this malloced structure won't work here
+  len = command__get_packed_size(command);
+  msgbuf = malloc(len);
+  command__pack(command, msgbuf);
+
+  msg__send_msgbuf(con_sockfd, msgbuf, len);
+}
 
 int msg__accept_cli_connection(int server_sockfd) {
   struct sockaddr_in cli_addr;

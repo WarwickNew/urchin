@@ -28,9 +28,10 @@ void cmd__move_direction(move_direction direction, Room *current_room) {
   }
 }
 
-void cmd__recv_proc_cmd(Player *player, Command *command) {
+void cmd__process_cmd(Player *player, Command *command) {
   if (command->has_move_direction) {
     move_direction dir = {command->move_direction};
     cmd__move_direction(dir, player->current_location);
   }
+  command__free_unpacked(command, NULL);
 }

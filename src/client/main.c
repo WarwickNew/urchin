@@ -1,9 +1,9 @@
 // Sorry in advance for all the comments. This project is also a way for me to
 // learn C.
 
-#include "error.h"
-#include "message.h"
-#include <unistd.h>
+#include "command_cli.h"
+#include <error.h>
+#include <message.h>
 #include <netdb.h>      // Contains host structure
 #include <netinet/in.h> //sockaddr_in
 #include <stdio.h>
@@ -12,6 +12,8 @@
 #include <strings.h>
 #include <sys/socket.h> // sockaddr
 #include <sys/types.h>
+#include <unistd.h>
+#include <world_structures.h>
 
 // void error_crash(const char *msg) {
 //   fprintf(stderr, "error crash: %s\n", msg);
@@ -59,6 +61,11 @@ int main(int argc, char *argv[]) {
     err__crash("Failed to connect to host");
 
   msg__req_login(&sockfd, "username", "passwd");
+
+  Command *cmd = cmd__create();
+  cmd__add_move(cmd, WEST);
+  msg__req_command(&sockfd, cmd);
+  cmd__destroy(cmd);
 
   while (1) {
     bzero(msgbuffer, sizeof msgbuffer);

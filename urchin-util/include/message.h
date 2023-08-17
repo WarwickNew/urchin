@@ -28,6 +28,9 @@ int msg__accept_cli_connection(int server_sockfd);
 void msg__recv_login(int *con_sockfd);
 void msg__req_login(int *con_sockfd, char *usernm, char *passwd);
 
-// send and recive commands
+// Recive commands, This creates a Command object that must be freed using
+// command__free_unpacked() once processed.
 Command *msg__recv_command(int *con_sockfd);
-void msg__req_command(int *con_sockfd, char *usernm, char *passwd);
+
+// Sends a preconfigured command to the server
+void msg__req_command(int *con_sockfd, Command* command);

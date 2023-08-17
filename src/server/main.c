@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include "world.h"
+#include "command.h"
 
 int main(int argc, char *argv[]) {
   // Set up containers for file descriptor id's
@@ -31,6 +32,8 @@ int main(int argc, char *argv[]) {
 
   // Create world
   Room* world = wrld__create();
+  Player player;
+  player.current_location = &world[0];
 
   // Create socket
   serv_sockfd = msg__create_serv_connection(portno);
@@ -40,6 +43,11 @@ int main(int argc, char *argv[]) {
 
   // Require login as first request
   msg__recv_login(&cli_sockfd);
+
+  //HACK: test recieve of movement command
+  err__log(player.current_location->name);
+  cmd__process_cmd(&player, msg__recv_command(&cli_sockfd));
+  err__log(player.current_location->name);
 
   while (1) {
     // Empty message buffer
