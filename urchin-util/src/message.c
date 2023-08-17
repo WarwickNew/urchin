@@ -1,7 +1,5 @@
 #include "message.h"
 #include "error.h"
-#include "protobuf_gen/amessage.pb-c.h"
-#include "protobuf_gen/player.pb-c.h"
 #include "world_structures.h"
 #include <stdio.h>
 
@@ -60,7 +58,7 @@ size_t get_msg_size_in_buffer(unsigned max_length, uint8_t *out) {
 }
 
 void read_from_sock(uint8_t *recvbuf, unsigned bufsize, int *sockfd) {
-  bzero(recvbuf,  bufsize);
+  bzero(recvbuf, bufsize);
 
   if (read(*sockfd, recvbuf, bufsize) < 0) {
     err__warn("Connection did not send data");
@@ -148,8 +146,22 @@ int msg__create_serv_connection(int portno) {
 
   return sockfd;
 }
+Command *msg__recv_command(int *con_sockfd) {
+  uint8_t msgbuf[MAX_MSG_SIZE];
+  read_from_sock(msgbuf, sizeof msgbuf, con_sockfd);
+  size_t msg_len = get_msg_size_in_buffer(MAX_MSG_SIZE, msgbuf);
 
-void msg__destroy_connection(int sockfd) { close(sockfd); }
+  Command *cmd = command__unpack(NULL, msg_len, msgbuf);
+  if (cmd == NULL) {
+    err__warn("Error unpacking login message");
+
+    command__free_unpacked(cmd, NULL);
+    return NULL;
+  }
+
+  return cmd;
+}
+void msg__req_command(int *con_sockfd, char *usernm, char *passwd) {}
 
 int msg__accept_cli_connection(int server_sockfd) {
   struct sockaddr_in cli_addr;
@@ -164,5 +176,4 @@ int msg__accept_cli_connection(int server_sockfd) {
   return cli_sockfd;
 }
 
-void msg__recv_command(int *con_sockfd) {}
-void msg__req_command(int *con_sockfd, char *usernm, char *passwd) {}
+void msg__destroy_connection(int sockfd) { close(sockfd); }

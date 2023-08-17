@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../src/protobuf_gen/amessage.pb-c.h"
+#include "../src/protobuf_gen/commands.pb-c.h"
+#include "../src/protobuf_gen/player.pb-c.h"
 #include "error.h"
 #include "message_internal.h"
 #include <netinet/in.h> //sockaddr_in
@@ -26,5 +29,5 @@ void msg__recv_login(int *con_sockfd);
 void msg__req_login(int *con_sockfd, char *usernm, char *passwd);
 
 // send and recive commands
-void msg__recv_command(int *con_sockfd);
+Command *msg__recv_command(int *con_sockfd);
 void msg__req_command(int *con_sockfd, char *usernm, char *passwd);
