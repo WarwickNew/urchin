@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 project(urchin
     VERSION 0
     DESCRIPTION "Simple Mud Experiment in C"
@@ -7,7 +7,7 @@ project(urchin
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_C_CLANG_TIDY)
+set(CMAKE_C_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 include(CheckIncludeFile)
 add_subdirectory(${CMAKE_SOURCE_DIR}/urchin-util)

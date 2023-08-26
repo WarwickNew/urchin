@@ -1,6 +1,8 @@
 // Sorry in advance for all the comments. This project is also a way for me to
 // learn C.
 
+#include "command.h"
+#include "world.h"
 #include <error.h>
 #include <message.h>
 #include <netinet/in.h> //sockaddr_in
@@ -11,8 +13,6 @@
 #include <sys/socket.h> // sockaddr
 #include <sys/types.h>
 #include <unistd.h>
-#include "world.h"
-#include "command.h"
 
 int main(int argc, char *argv[]) {
   // Set up containers for file descriptor id's
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
                                       // touched until it's used
 
   // Create world
-  Room* world = wrld__create();
+  Room *world = wrld__create();
   Player player;
   player.current_location = &world[0];
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
   // Require login as first request
   msg__recv_login(&cli_sockfd);
 
-  //HACK: test recieve of movement command
+  // HACK: test recieve of movement command
   err__log(player.current_location->name);
   cmd__process_cmd(&player, msg__recv_command(&cli_sockfd));
   err__log(player.current_location->name);

@@ -10,7 +10,6 @@ Command *cmd__create() {
 }
 
 void cmd__add_move(Command *command, move_direction direction) {
-//  command->has_move_direction = 1;
   command->move_direction = direction;
 }
 
